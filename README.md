@@ -2,27 +2,9 @@
 
 ## Features
 
-Description of the module...
-
-<!--
-![Screenshot productstockgroup](img/screenshot_productstockgroup.png?raw=true "ProductStockGroup"){imgmd}
--->
+This module allows joint control of the stock of several products at the same time. For example, if there are similar products from different suppliers, it is possible to know when the sum of the stock of the set of products is below a minimum stock.
 
 Other external modules are available on [Dolistore.com](https://www.dolistore.com).
-
-## Translations
-
-Translations can be completed manually by editing files into directories *langs*.
-
-<!--
-This module contains also a sample configuration for Transifex, under the hidden directory [.tx](.tx), so it is possible to manage translation using this service.
-
-For more informations, see the [translator's documentation](https://wiki.dolibarr.org/index.php/Translator_documentation).
-
-There is a [Transifex project](https://transifex.com/projects/p/dolibarr-module-template) for this module.
--->
-
-<!--
 
 ## Installation
 
@@ -73,13 +55,11 @@ From your browser:
   - Go to "Setup" -> "Modules"
   - You should now be able to find and enable the module
 
--->
-
 ## Licenses
 
 ### Main code
 
-GPLv3 or (at your option) any later version. See file COPYING for more information.
+GPLv3. See file COPYING for more information.
 
 ### Documentation
 

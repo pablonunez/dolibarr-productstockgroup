@@ -45,14 +45,14 @@ class modProductStockGroup extends DolibarrModules
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
-		$this->numero = 500000; // TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve an id number for your module
+		$this->numero = 471200; // TODO Go on page https://wiki.dolibarr.org/index.php/List_of_modules_id to reserve an id number for your module
 
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'productstockgroup';
 
 		// Family can be 'base' (core modules),'crm','financial','hr','projects','products','ecm','technic' (transverse modules),'interface' (link with external tools),'other','...'
 		// It is used to group modules by family in module setup page
-		$this->family = "other";
+		$this->family = "products";
 
 		// Module position in the family on 2 digits ('01', '10', '20', ...)
 		$this->module_position = '90';
@@ -68,8 +68,8 @@ class modProductStockGroup extends DolibarrModules
 		$this->descriptionlong = "ProductStockGroupDescription";
 
 		// Author
-		$this->editor_name = 'Editor name';
-		$this->editor_url = 'https://www.example.com';
+		$this->editor_name = 'Pablo Nuñez';
+		$this->editor_url = 'https://github.com/pablonunez/dolibarr-productstockgroup';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
 		$this->version = '1.0';
@@ -84,6 +84,7 @@ class modProductStockGroup extends DolibarrModules
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		// To use a supported fa-xxx css style of font awesome, use this->picto='xxx'
 		$this->picto = 'generic';
+		$this->picto = 'fa-box';
 
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
@@ -244,8 +245,8 @@ class modProductStockGroup extends DolibarrModules
 			//  0 => array(
 			//      'label' => 'MyJob label',
 			//      'jobtype' => 'method',
-			//      'class' => '/productstockgroup/class/myobject.class.php',
-			//      'objectname' => 'MyObject',
+			//      'class' => '/productstockgroup/class/stockgroup.class.php',
+			//      'objectname' => 'StockGroup',
 			//      'method' => 'doScheduledJob',
 			//      'parameters' => '',
 			//      'comment' => 'Comment',
@@ -268,18 +269,18 @@ class modProductStockGroup extends DolibarrModules
 		/* BEGIN MODULEBUILDER PERMISSIONS */
 		$this->rights[$r][0] = $this->numero . sprintf("%02d", $r + 1); // Permission id (must not be already used)
 		$this->rights[$r][1] = 'Read objects of ProductStockGroup'; // Permission label
-		$this->rights[$r][4] = 'myobject';
-		$this->rights[$r][5] = 'read'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->myobject->read)
+		$this->rights[$r][4] = 'stockgroup';
+		$this->rights[$r][5] = 'read'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->stockgroup->read)
 		$r++;
 		$this->rights[$r][0] = $this->numero . sprintf("%02d", $r + 1); // Permission id (must not be already used)
 		$this->rights[$r][1] = 'Create/Update objects of ProductStockGroup'; // Permission label
-		$this->rights[$r][4] = 'myobject';
-		$this->rights[$r][5] = 'write'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->myobject->write)
+		$this->rights[$r][4] = 'stockgroup';
+		$this->rights[$r][5] = 'write'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->stockgroup->write)
 		$r++;
 		$this->rights[$r][0] = $this->numero . sprintf("%02d", $r + 1); // Permission id (must not be already used)
 		$this->rights[$r][1] = 'Delete objects of ProductStockGroup'; // Permission label
-		$this->rights[$r][4] = 'myobject';
-		$this->rights[$r][5] = 'delete'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->myobject->delete)
+		$this->rights[$r][4] = 'stockgroup';
+		$this->rights[$r][5] = 'delete'; // In php code, permission will be checked by test if ($user->rights->productstockgroup->stockgroup->delete)
 		$r++;
 		/* END MODULEBUILDER PERMISSIONS */
 
@@ -288,132 +289,175 @@ class modProductStockGroup extends DolibarrModules
 		$r = 0;
 		// Add here entries to declare new menus
 		/* BEGIN MODULEBUILDER TOPMENU */
-		$this->menu[$r++] = array(
-			'fk_menu'=>'', // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'top', // This is a Top menu entry
-			'titre'=>'ModuleProductStockGroupName',
-			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
-			'mainmenu'=>'productstockgroup',
-			'leftmenu'=>'',
-			'url'=>'/productstockgroup/productstockgroupindex.php',
-			'langs'=>'productstockgroup@productstockgroup', // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>1000 + $r,
-			'enabled'=>'$conf->productstockgroup->enabled', // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled.
-			'perms'=>'1', // Use 'perms'=>'$user->rights->productstockgroup->myobject->read' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>2, // 0=Menu for internal users, 1=external users, 2=both
-		);
+		// $this->menu[$r++] = array(
+		// 	'fk_menu'=>'', // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+		// 	'type'=>'top', // This is a Top menu entry
+		// 	'titre'=>'ModuleProductStockGroupName',
+		// 	'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
+		// 	'mainmenu'=>'productstockgroup',
+		// 	'leftmenu'=>'',
+		// 	'url'=>'/productstockgroup/productstockgroupindex.php',
+		// 	'langs'=>'productstockgroup@productstockgroup', // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		// 	'position'=>1000 + $r,
+		// 	'enabled'=>'$conf->productstockgroup->enabled', // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled.
+		// 	'perms'=>'1', // Use 'perms'=>'$user->rights->productstockgroup->stockgroup->read' if you want your menu with a permission rules
+		// 	'target'=>'',
+		// 	'user'=>2, // 0=Menu for internal users, 1=external users, 2=both
+		// );
 		/* END MODULEBUILDER TOPMENU */
-		/* BEGIN MODULEBUILDER LEFTMENU MYOBJECT
+		/* BEGIN MODULEBUILDER LEFTMENU STOCKGROUP
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=productstockgroup',      // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',                          // This is a Left menu entry
-			'titre'=>'MyObject',
+			'titre'=>'StockGroup',
 			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
 			'mainmenu'=>'productstockgroup',
-			'leftmenu'=>'myobject',
+			'leftmenu'=>'stockgroup',
 			'url'=>'/productstockgroup/productstockgroupindex.php',
 			'langs'=>'productstockgroup@productstockgroup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position'=>1000+$r,
 			'enabled'=>'$conf->productstockgroup->enabled',  // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled.
-			'perms'=>'$user->rights->productstockgroup->myobject->read',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
+			'perms'=>'$user->rights->productstockgroup->stockgroup->read',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
 			'target'=>'',
 			'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
 		);
 		$this->menu[$r++]=array(
-			'fk_menu'=>'fk_mainmenu=productstockgroup,fk_leftmenu=myobject',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'fk_menu'=>'fk_mainmenu=productstockgroup,fk_leftmenu=stockgroup',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>'List_MyObject',
+			'titre'=>'List_StockGroup',
 			'mainmenu'=>'productstockgroup',
-			'leftmenu'=>'productstockgroup_myobject_list',
-			'url'=>'/productstockgroup/myobject_list.php',
+			'leftmenu'=>'productstockgroup_stockgroup_list',
+			'url'=>'/productstockgroup/stockgroup_list.php',
 			'langs'=>'productstockgroup@productstockgroup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position'=>1000+$r,
 			'enabled'=>'$conf->productstockgroup->enabled',  // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=>'$user->rights->productstockgroup->myobject->read',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
+			'perms'=>'$user->rights->productstockgroup->stockgroup->read',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
 			'target'=>'',
 			'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
 		);
 		$this->menu[$r++]=array(
-			'fk_menu'=>'fk_mainmenu=productstockgroup,fk_leftmenu=myobject',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'fk_menu'=>'fk_mainmenu=productstockgroup,fk_leftmenu=stockgroup',	    // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>'New_MyObject',
+			'titre'=>'New_StockGroup',
 			'mainmenu'=>'productstockgroup',
-			'leftmenu'=>'productstockgroup_myobject_new',
-			'url'=>'/productstockgroup/myobject_card.php?action=create',
+			'leftmenu'=>'productstockgroup_stockgroup_new',
+			'url'=>'/productstockgroup/stockgroup_card.php?action=create',
 			'langs'=>'productstockgroup@productstockgroup',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position'=>1000+$r,
 			'enabled'=>'$conf->productstockgroup->enabled',  // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=>'$user->rights->productstockgroup->myobject->write',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
+			'perms'=>'$user->rights->productstockgroup->stockgroup->write',			                // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
 			'target'=>'',
 			'user'=>2,				                // 0=Menu for internal users, 1=external users, 2=both
 		);
-		END MODULEBUILDER LEFTMENU MYOBJECT */
+		*/
+
+        $this->menu[$r++]=array(
+            // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+            'fk_menu'=>'fk_mainmenu=products,fk_leftmenu=product',
+            // This is a Left menu entry
+            'type'=>'left',
+            'titre'=> 'StockGroup',
+            'mainmenu'=>'products',
+            'leftmenu'=>'product',
+            'url'=>'/productstockgroup/stockgroup_list.php',
+            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+            'langs'=>'productstockgroup@productstockgroup',
+            'position'=>1100+$r,
+            // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+            'enabled'=>'$conf->productstockgroup->enabled',
+            // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
+            'perms'=>'1',
+            'target'=>'',
+            // 0=Menu for internal users, 1=external users, 2=both
+            'user'=>2,
+        );
+		/*
+        $this->menu[$r++]=array(
+            // '' if this is a top menu. For left menu, use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+            'fk_menu'=>'fk_mainmenu=productstockgroup,fk_leftmenu=productstockgroup_stockgroup',
+            // This is a Left menu entry
+            'type'=>'left',
+            'titre'=>'New StockGroup',
+            'mainmenu'=>'productstockgroup',
+            'leftmenu'=>'productstockgroup_stockgroup',
+            'url'=>'/productstockgroup/stockgroup_card.php?action=create',
+            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+            'langs'=>'productstockgroup@productstockgroup',
+            'position'=>1100+$r,
+            // Define condition to show or hide menu entry. Use '$conf->productstockgroup->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+            'enabled'=>'$conf->productstockgroup->enabled',
+            // Use 'perms'=>'$user->rights->productstockgroup->level1->level2' if you want your menu with a permission rules
+            'perms'=>'1',
+            'target'=>'',
+            // 0=Menu for internal users, 1=external users, 2=both
+            'user'=>2
+        );*/
+
+		/* END MODULEBUILDER LEFTMENU STOCKGROUP */
 		// Exports profiles provided by this module
 		$r = 1;
-		/* BEGIN MODULEBUILDER EXPORT MYOBJECT */
-		/*
+		/* BEGIN MODULEBUILDER EXPORT STOCKGROUP */
 		$langs->load("productstockgroup@productstockgroup");
 		$this->export_code[$r]=$this->rights_class.'_'.$r;
-		$this->export_label[$r]='MyObjectLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->export_icon[$r]='myobject@productstockgroup';
+		$this->export_label[$r]='StockGroupLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_icon[$r]='stockgroup@productstockgroup';
 		// Define $this->export_fields_array, $this->export_TypeFields_array and $this->export_entities_array
-		$keyforclass = 'MyObject'; $keyforclassfile='/productstockgroup/class/myobject.class.php'; $keyforelement='myobject@productstockgroup';
+		$keyforclass = 'StockGroup'; $keyforclassfile='/productstockgroup/class/stockgroup.class.php'; $keyforelement='stockgroup@productstockgroup';
 		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
 		//$this->export_fields_array[$r]['t.fieldtoadd']='FieldToAdd'; $this->export_TypeFields_array[$r]['t.fieldtoadd']='Text';
 		//unset($this->export_fields_array[$r]['t.fieldtoremove']);
-		//$keyforclass = 'MyObjectLine'; $keyforclassfile='/productstockgroup/class/myobject.class.php'; $keyforelement='myobjectline@productstockgroup'; $keyforalias='tl';
+		//$keyforclass = 'StockGroupLine'; $keyforclassfile='/productstockgroup/class/stockgroup.class.php'; $keyforelement='stockgroupline@productstockgroup'; $keyforalias='tl';
 		//include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
-		$keyforselect='myobject'; $keyforaliasextra='extra'; $keyforelement='myobject@productstockgroup';
+		$keyforselect='stockgroup'; $keyforaliasextra='extra'; $keyforelement='stockgroup@productstockgroup';
 		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
-		//$keyforselect='myobjectline'; $keyforaliasextra='extraline'; $keyforelement='myobjectline@productstockgroup';
+		//$keyforselect='stockgroupline'; $keyforaliasextra='extraline'; $keyforelement='stockgroupline@productstockgroup';
 		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
-		//$this->export_dependencies_array[$r] = array('myobjectline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
+		//$this->export_dependencies_array[$r] = array('stockgroupline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
 		//$this->export_help_array[$r] = array('t.field'=>'FieldDescHelp');
 		$this->export_sql_start[$r]='SELECT DISTINCT ';
-		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'myobject as t';
-		//$this->export_sql_end[$r]  =' LEFT JOIN '.MAIN_DB_PREFIX.'myobject_line as tl ON tl.fk_myobject = t.rowid';
+		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'stockgroup as t';
+		//$this->export_sql_end[$r]  =' LEFT JOIN '.MAIN_DB_PREFIX.'stockgroup_line as tl ON tl.fk_stockgroup = t.rowid';
 		$this->export_sql_end[$r] .=' WHERE 1 = 1';
-		$this->export_sql_end[$r] .=' AND t.entity IN ('.getEntity('myobject').')';
-		$r++; */
-		/* END MODULEBUILDER EXPORT MYOBJECT */
+		// $this->export_sql_end[$r] .=' AND t.entity IN ('.getEntity('stockgroup').')';
+		$r++; 
+		/* END MODULEBUILDER EXPORT STOCKGROUP */
 
 		// Imports profiles provided by this module
 		$r = 1;
-		/* BEGIN MODULEBUILDER IMPORT MYOBJECT */
+		/* BEGIN MODULEBUILDER IMPORT STOCKGROUP */
 		/*
 		$langs->load("productstockgroup@productstockgroup");
 		$this->import_code[$r]=$this->rights_class.'_'.$r;
-		$this->import_label[$r]='MyObjectLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->import_icon[$r]='myobject@productstockgroup';
-		$this->import_tables_array[$r] = array('t' => MAIN_DB_PREFIX.'productstockgroup_myobject', 'extra' => MAIN_DB_PREFIX.'productstockgroup_myobject_extrafields');
+		$this->import_label[$r]='StockGroupLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->import_icon[$r]='stockgroup@productstockgroup';
+		$this->import_tables_array[$r] = array('t' => MAIN_DB_PREFIX.'productstockgroup_stockgroup', 'extra' => MAIN_DB_PREFIX.'productstockgroup_stockgroup_extrafields');
 		$this->import_tables_creator_array[$r] = array('t' => 'fk_user_author'); // Fields to store import user id
 		$import_sample = array();
-		$keyforclass = 'MyObject'; $keyforclassfile='/productstockgroup/class/myobject.class.php'; $keyforelement='myobject@productstockgroup';
+		$keyforclass = 'StockGroup'; $keyforclassfile='/productstockgroup/class/stockgroup.class.php'; $keyforelement='stockgroup@productstockgroup';
 		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinimport.inc.php';
 		$import_extrafield_sample = array();
-		$keyforselect='myobject'; $keyforaliasextra='extra'; $keyforelement='myobject@productstockgroup';
+		$keyforselect='stockgroup'; $keyforaliasextra='extra'; $keyforelement='stockgroup@productstockgroup';
 		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinimport.inc.php';
-		$this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-'.MAIN_DB_PREFIX.'productstockgroup_myobject');
+		$this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-'.MAIN_DB_PREFIX.'productstockgroup_stockgroup');
 		$this->import_regex_array[$r] = array();
 		$this->import_examplevalues_array[$r] = array_merge($import_sample, $import_extrafield_sample);
 		$this->import_updatekeys_array[$r] = array('t.ref' => 'Ref');
 		$this->import_convertvalue_array[$r] = array(
 			't.ref' => array(
 				'rule'=>'getrefifauto',
-				'class'=>(empty($conf->global->PRODUCTSTOCKGROUP_MYOBJECT_ADDON) ? 'mod_myobject_standard' : $conf->global->PRODUCTSTOCKGROUP_MYOBJECT_ADDON),
-				'path'=>"/core/modules/commande/".(empty($conf->global->PRODUCTSTOCKGROUP_MYOBJECT_ADDON) ? 'mod_myobject_standard' : $conf->global->PRODUCTSTOCKGROUP_MYOBJECT_ADDON).'.php'
-				'classobject'=>'MyObject',
-				'pathobject'=>'/productstockgroup/class/myobject.class.php',
+				'class'=>(empty($conf->global->PRODUCTSTOCKGROUP_STOCKGROUP_ADDON) ? 'mod_stockgroup_standard' : $conf->global->PRODUCTSTOCKGROUP_STOCKGROUP_ADDON),
+				'path'=>"/core/modules/commande/".(empty($conf->global->PRODUCTSTOCKGROUP_STOCKGROUP_ADDON) ? 'mod_stockgroup_standard' : $conf->global->PRODUCTSTOCKGROUP_STOCKGROUP_ADDON).'.php'
+				'classobject'=>'StockGroup',
+				'pathobject'=>'/productstockgroup/class/stockgroup.class.php',
 			),
 			't.fk_soc' => array('rule' => 'fetchidfromref', 'file' => '/societe/class/societe.class.php', 'class' => 'Societe', 'method' => 'fetch', 'element' => 'ThirdParty'),
 			't.fk_user_valid' => array('rule' => 'fetchidfromref', 'file' => '/user/class/user.class.php', 'class' => 'User', 'method' => 'fetch', 'element' => 'user'),
 			't.fk_mode_reglement' => array('rule' => 'fetchidfromcodeorlabel', 'file' => '/compta/paiement/class/cpaiement.class.php', 'class' => 'Cpaiement', 'method' => 'fetch', 'element' => 'cpayment'),
 		);
 		$r++; */
-		/* END MODULEBUILDER IMPORT MYOBJECT */
+		/* END MODULEBUILDER IMPORT STOCKGROUP */
 	}
 
 	/**
@@ -435,8 +479,28 @@ class modProductStockGroup extends DolibarrModules
 		}
 
 		// Create extrafields during init
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-		//$extrafields = new ExtraFields($this->db);
+		include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		$extrafields = new ExtraFields($this->db);
+		$result1 = $extrafields->addExtraField(
+			"stock_group", //attrname 
+			"Stock Group", // label
+			'sellist', // type
+			100,  // pos
+			'', // size
+			'product', // elementtype
+			0, // unique
+			0, // required
+			'', // default_value
+			'a:1:{s:7:"options";a:1:{s:40:"productstockgroup_stockgroup:ref:rowid::";N;}}', // param
+			1, // alwayseditable
+			'', // perms
+			1, // list
+			0, // help
+			'', // computed 
+			'', //  entity
+			'', // langfile
+			'$conf->productstockgroup->enabled' // enabled
+		);
 		//$result1=$extrafields->addExtraField('productstockgroup_myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'productstockgroup@productstockgroup', '$conf->productstockgroup->enabled');
 		//$result2=$extrafields->addExtraField('productstockgroup_myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'productstockgroup@productstockgroup', '$conf->productstockgroup->enabled');
 		//$result3=$extrafields->addExtraField('productstockgroup_myattr3', "New Attr 3 label", 'varchar', 1, 10, 'bank_account', 0, 0, '', '', 1, '', 0, 0, '', '', 'productstockgroup@productstockgroup', '$conf->productstockgroup->enabled');
@@ -451,16 +515,16 @@ class modProductStockGroup extends DolibarrModules
 		// Document templates
 		$moduledir = dol_sanitizeFileName('productstockgroup');
 		$myTmpObjects = array();
-		$myTmpObjects['MyObject'] = array('includerefgeneration'=>0, 'includedocgeneration'=>0);
+		$myTmpObjects['StockGroup'] = array('includerefgeneration'=>0, 'includedocgeneration'=>0);
 
 		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
-			if ($myTmpObjectKey == 'MyObject') {
+			if ($myTmpObjectKey == 'StockGroup') {
 				continue;
 			}
 			if ($myTmpObjectArray['includerefgeneration']) {
-				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/'.$moduledir.'/template_myobjects.odt';
+				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/'.$moduledir.'/template_stockgroups.odt';
 				$dirodt = DOL_DATA_ROOT.'/doctemplates/'.$moduledir;
-				$dest = $dirodt.'/template_myobjects.odt';
+				$dest = $dirodt.'/template_stockgroups.odt';
 
 				if (file_exists($src) && !file_exists($dest)) {
 					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';

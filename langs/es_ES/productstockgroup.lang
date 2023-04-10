@@ -18,14 +18,15 @@
 #
 
 # Module label 'ModuleProductStockGroupName'
-ModuleProductStockGroupName = Stock Groups
+ModuleProductStockGroupName = Grupos de Stock
 # Module description 'ModuleProductStockGroupDesc'
-ModuleProductStockGroupDesc = This module allows joint control of the stock of several products at the same time
+ModuleProductStockGroupDesc = Este módulo permite el control conjunto del stock de varios productos a la vez
 
-StockGroup = Stock Group
-StockAlertThreshold = Stock Limit
+StockGroup = Grupo de Stock
+StockAlertThreshold = Límite Stock
 Stock = Stock
-ProductsOfStockGroup = Products of Stock Group
+ProductsOfStockGroup = Productos del Grupo de Stock
+
 
 #
 # Admin page
